@@ -1,0 +1,83 @@
+#ifndef STREAM_ASIO_ASYNC_H_INCLUDED
+#define STREAM_ASIO_ASYNC_H_INCLUDED
+
+#include <boost/asio/basic_socket.hpp>
+#include <boost/asio/read.hpp>
+#include <boost/asio/write.hpp>
+#include <boost/asio/buffer.hpp>
+#include "stream_base.h"
+
+namespace serialstorm {
+
+template<class SocketType>
+class stream_asio_async : public stream_base<SocketType, stream_asio_async> {
+  /// Stream handler to manage an asynchronous boost::asio stream with a yield context
+public:
+  boost::asio::basic_stream_socket<SocketType> &socket;
+  boost::asio::yield_context &yield;
+
+  constexpr stream_asio_async(boost::asio::basic_stream_socket<SocketType> &socket,
+                              boost::asio::yield_context &yield)
+    : socket(socket),
+      yield(yield) {
+    /// Specific constructor
+  }
+
+  template<typename T>
+  void read_buffer(T *data, size_t const size) const {
+    /// Read a block of data of the specified size from the stream to the target buffer asynchronously
+    boost::asio::async_read(socket, boost::asio::buffer(data, size), yield);
+  }
+
+  template<typename T>
+  std::string read_string(T const stringlength) const {
+    /// Read size bytes from the stream into a string asynchronously
+    #ifdef NDEBUG
+      std::string string(stringlength, '\n');               // use null byte as default fill to minimise risk in release mode
+    #else
+      std::string string(stringlength, '?');                // use ? as a marker character to visibly show if we somehow end up with a short read
+    #endif
+    read_buffer(&string[0], string.size());                 // copy-less string-filling buffer hack from http://stackoverflow.com/a/19623133/1678468
+    return string;
+  }
+
+  template<typename T, typename SizeT>
+  std::vector<T> read_blob(SizeT const size) const {
+    /// Read size bytes from the stream into a vector blob asynchronously
+    std::vector<T> blob(size);
+    read_buffer(blob.data(), blob.size());
+    return blob;
+  }
+
+  template<typename T>
+  inline void write_buffer(T const &buffer) {
+    /// Write an asio native buffer (or whatever fitrs in its place) to the stream asynchronously
+    boost::asio::async_write(socket, buffer, yield);
+  }
+  template<typename T>
+  inline void write_buffer(T const *data, size_t const size) {
+    /// Write a block of data of the specified size to the stream from the target buffer asynchronously
+    write_buffer(boost::asio::buffer(data, size));
+  }
+
+  template <typename T>
+  inline void write_string(std::basic_string<T> const &string) {
+    /// Write a string to the stream asynchronously
+    write_buffer(boost::asio::buffer(string));
+  }
+
+  template <typename T>
+  inline void write_blob(std::vector<T> const &blob) {
+    /// Write a blob to the stream asynchronously
+    write_buffer(boost::asio::buffer(blob));
+  }
+  template <typename T>
+  inline void write_blob(std::vector<T> const &blob, size_t const size) {
+    /// Write a blob to the stream asynchronously
+    write_buffer(boost::asio::buffer(blob, size));
+  }
+};
+
+}
+
+#endif // STREAM_ASIO_ASYNC_H_INCLUDED
