@@ -3,7 +3,7 @@
 
 namespace serialstorm {
 
-template<class SocketType, template<class> class StreamT>
+template<class StreamParam, template<class> class StreamT>
 class stream_base {
   /// CRTP style static polymorphic base class for streams
 private:
@@ -19,7 +19,7 @@ public:
   template<typename T>
   void read_buffer(T *data, size_t const size) const {
     /// CRTP polymorphic buffer read function
-    static_cast<StreamT<SocketType> const*>(this)->read_buffer(data, size);
+    static_cast<StreamT<StreamParam> const*>(this)->read_buffer(data, size);
   }
   template<typename T>
   void read_buffer(T *data) const {
@@ -66,7 +66,7 @@ public:
   template<typename T>
   std::string read_string(T stringlength) const {
     /// CRTP polymorphic buffer read function: fill a string of the specified size from the stream
-    return static_cast<StreamT<SocketType> const*>(this)->read_string(stringlength);
+    return static_cast<StreamT<StreamParam> const*>(this)->read_string(stringlength);
   }
 
   template<typename T>
@@ -119,13 +119,13 @@ public:
   inline void write_buffer(T const &buffer) {
     /// CRTP polymorphic buffer write function passing whatever native buffer the stream takes
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
-    static_cast<StreamT<SocketType>*>(this)->write_buffer(buffer);
+    static_cast<StreamT<StreamParam>*>(this)->write_buffer(buffer);
   }
   template<typename T>
   inline void write_buffer(T const *data, size_t const size) {
     /// CRTP polymorphic buffer write function
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
-    static_cast<StreamT<SocketType>*>(this)->write_buffer(data, size);
+    static_cast<StreamT<StreamParam>*>(this)->write_buffer(data, size);
   }
 
   template<typename T>
@@ -160,7 +160,7 @@ public:
   inline void write_string(std::string const &string) {
     /// CRTP polymorphic buffer write function: write a bare string to the stream
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
-    static_cast<StreamT<SocketType>*>(this)->write_string(string);
+    static_cast<StreamT<StreamParam>*>(this)->write_string(string);
   }
 
   template<typename T>
@@ -180,13 +180,13 @@ public:
   inline void write_blob(std::vector<T> const &blob) {
     /// CTCP polymorphic buffer write function: write a bare blob to the stream
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
-    static_cast<StreamT<SocketType>*>(this)->write_blob(blob);
+    static_cast<StreamT<StreamParam>*>(this)->write_blob(blob);
   }
   template <typename T>
   inline void write_blob(std::vector<T> const &blob, size_t const size) {
     /// CTCP polymorphic buffer write function: write a bare blob to the stream
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
-    static_cast<StreamT<SocketType>*>(this)->write_blob(blob, size);
+    static_cast<StreamT<StreamParam>*>(this)->write_blob(blob, size);
   }
 
   inline void write_varblob(std::vector<char> const &blob) {

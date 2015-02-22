@@ -1,32 +1,33 @@
-#ifndef STREAM_ASIO_ASYNC_H_INCLUDED
-#define STREAM_ASIO_ASYNC_H_INCLUDED
+#ifndef STREAM_STD_FSTREAM_H_INCLUDED
+#define STREAM_STD_FSTREAM_H_INCLUDED
 
-#include <boost/asio/basic_socket.hpp>
-#include <boost/asio/read.hpp>
-#include <boost/asio/write.hpp>
-#include <boost/asio/buffer.hpp>
 #include "stream_base.h"
+#ifndef NDEBUG
+  #include <iostream>
+#endif
 
 namespace serialstorm {
 
-template<class SocketType>
-class stream_asio_async : public stream_base<SocketType, stream_asio_async> {
-  /// Stream handler to manage an asynchronous boost::asio stream with a yield context
+template<class StreamT>
+class stream_std_fstream : public stream_base<StreamT, stream_std_fstream> {
+  /// Stream handler to manage a std::fstream
 public:
-  boost::asio::basic_stream_socket<SocketType> &socket;
-  boost::asio::yield_context &yield;
+  StreamT &stream;
 
-  constexpr stream_asio_async(boost::asio::basic_stream_socket<SocketType> &socket,
-                              boost::asio::yield_context &yield)
-    : socket(socket),
-      yield(yield) {
+  constexpr stream_std_fstream(StreamT &stream)
+    : stream(stream) {
     /// Specific constructor
   }
 
   template<typename T>
   void read_buffer(T *data, size_t const size) const {
     /// Read a block of data of the specified size from the stream to the target buffer asynchronously
-    boost::asio::async_read(socket, boost::asio::buffer(data, size), yield);
+    stream.read(reinterpret_cast<char*>(data), size);
+    #ifndef NDEBUG
+      if(!stream) {
+        std::cout << "SerialStorm: WARNING: short read on stream: " << stream.gcount() << " read out of " << size << " requested." << std::endl;
+      }
+    #endif
   }
 
   template<typename T>
@@ -51,33 +52,33 @@ public:
 
   template<typename T>
   inline void write_buffer(T const &buffer) {
-    /// Write an asio native buffer (or whatever fits in its place) to the stream asynchronously
-    boost::asio::async_write(socket, buffer, yield);
+    /// Write a native buffer of char const* (or whatever implicitly converts to that) to the stream
+    stream.write(buffer, sizeof(buffer));
   }
   template<typename T>
   inline void write_buffer(T const *data, size_t const size) {
-    /// Write a block of data of the specified size to the stream from the target buffer asynchronously
-    write_buffer(boost::asio::buffer(data, size));
+    /// Write a block of data of the specified size to the stream from the target buffer
+    stream.write(reinterpret_cast<char const*>(data), size);
   }
 
   template <typename T>
   inline void write_string(std::basic_string<T> const &string) {
-    /// Write a string to the stream asynchronously
-    write_buffer(boost::asio::buffer(string));
+    /// Write a string to the stream
+    stream.write(string.c_str(), string.size());
   }
 
   template <typename T>
   inline void write_blob(std::vector<T> const &blob) {
-    /// Write a blob to the stream asynchronously
-    write_buffer(boost::asio::buffer(blob));
+    /// Write a blob to the stream
+    write_blob(blob, blob.size() * sizeof(T));
   }
   template <typename T>
   inline void write_blob(std::vector<T> const &blob, size_t const size) {
-    /// Write a blob of specific size to the stream asynchronously
-    write_buffer(boost::asio::buffer(blob, size));
+    /// Write a blob of specific size to the stream
+    stream.write(blob.data(), size);
   }
 };
 
 }
 
-#endif // STREAM_ASIO_ASYNC_H_INCLUDED
+#endif // STREAM_STD_FSTREAM_H_INCLUDED

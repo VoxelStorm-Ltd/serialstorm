@@ -30,7 +30,7 @@ public:
   std::string read_string(T const stringlength) const {
     /// Read size bytes from the stream into a string synchronously
     #ifdef NDEBUG
-      std::string string(stringlength, '\n');               // use null byte as default fill to minimise risk in release mode
+      std::string string(stringlength, '\0');               // use null byte as default fill to minimise risk in release mode
     #else
       std::string string(stringlength, '?');                // use ? as a marker character to visibly show if we somehow end up with a short read
     #endif
@@ -42,13 +42,13 @@ public:
   std::vector<T> read_blob(SizeT const size) const {
     /// Read size bytes from the stream into a vector blob synchronously
     std::vector<T> blob(size);
-    read_buffer(blob.data(), blob.size());
+    read_buffer(blob.data(), blob.size() * sizeof(T));
     return blob;
   }
 
   template<typename T>
   inline void write_buffer(T const &buffer) {
-    /// Write an asio native buffer (or whatever fitrs in its place) to the stream synchronously
+    /// Write an asio native buffer (or whatever fits in its place) to the stream synchronously
     boost::asio::write(socket, buffer);
   }
   template<typename T>
@@ -70,7 +70,7 @@ public:
   }
   template <typename T>
   inline void write_blob(std::vector<T> const &blob, size_t const size) {
-    /// Write a blob to the stream synchronously
+    /// Write a blob of specific size to the stream synchronously
     write_buffer(boost::asio::buffer(blob, size));
   }
 };
