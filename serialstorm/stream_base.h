@@ -1,6 +1,11 @@
 #ifndef STREAM_BASE_H_INCLUDED
 #define STREAM_BASE_H_INCLUDED
 
+#include <vector>
+#include <sstream>
+#include <stdexcept>
+#include <limits>
+
 namespace serialstorm {
 
 template<class StreamParam, template<class> class StreamT>
