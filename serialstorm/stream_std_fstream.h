@@ -14,8 +14,8 @@ class stream_std_fstream : public stream_base<StreamT, stream_std_fstream> {
 public:
   StreamT &stream;
 
-  constexpr stream_std_fstream(StreamT &stream)
-    : stream(stream) {
+  constexpr stream_std_fstream(StreamT &new_stream)
+    : stream(new_stream) {
     /// Specific constructor
   }
 
