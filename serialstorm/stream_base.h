@@ -49,7 +49,7 @@ public:
     ///   first byte to get x, and read 2^x bytes as the uint, and try to fit it
     ///   into the supplied template type (which may overflow).
     uint8_t datasize(read_pod<uint8_t>());
-    if(datasize & static_cast<uint8_t>(varint_size::UINT8)) {   // uint8_t half-byte (128), sent on its own
+    if(datasize & static_cast<uint8_t>(varint_size::UINT_8)) {  // uint8_t half-byte (128), sent on its own
       switch(static_cast<varint_size>(datasize)) {
       case varint_size::UINT_8:                                 // read a uint8_t  (1 byte)
         return cast_if_required<T>(read_pod<uint8_t>());
@@ -146,7 +146,7 @@ public:
     ///   Designed to work with uints only.  If our int is smaller than 128, we
     ///   simply write it as-is, sign bit unset.  Otherwise we flip the sign bit
     ///   on the first byte, and set the value to log2 of the number of bytes.
-    if(uint < static_cast<uint8_t>(varint_size::UINT8)) {       // uint8_t half-byte (128), sent on its own
+    if(uint < static_cast<uint8_t>(varint_size::UINT_8)) {      // uint8_t half-byte (128), sent on its own
       write_pod(static_cast<uint8_t>(uint));
     } else if(uint <= std::numeric_limits<uint8_t>::max()) {    // fits in a uint8_t (256 aka 0b1'00000000 or 0x1'00)
       write_pod(varint_size::UINT_8);                           // 1 byte
