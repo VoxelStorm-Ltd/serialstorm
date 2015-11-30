@@ -16,10 +16,10 @@ public:
   boost::asio::basic_stream_socket<SocketType> &socket;
   boost::asio::yield_context &yield;
 
-  constexpr stream_asio_async(boost::asio::basic_stream_socket<SocketType> &socket,
-                              boost::asio::yield_context &yield)
-    : socket(socket),
-      yield(yield) {
+  constexpr stream_asio_async(boost::asio::basic_stream_socket<SocketType> &this_socket,
+                              boost::asio::yield_context &this_yield)
+    : socket(this_socket),
+      yield(this_yield) {
     /// Specific constructor
   }
 

@@ -15,8 +15,8 @@ class stream_asio_sync : public stream_base<SocketType, stream_asio_sync> {
 public:
   boost::asio::basic_stream_socket<SocketType> &socket;
 
-  constexpr stream_asio_sync(boost::asio::basic_stream_socket<SocketType> &socket)
-    : socket(socket) {
+  constexpr stream_asio_sync(boost::asio::basic_stream_socket<SocketType> &this_socket)
+    : socket(this_socket) {
     /// Specific constructor
   }
 
