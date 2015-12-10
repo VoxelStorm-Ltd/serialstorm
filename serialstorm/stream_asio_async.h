@@ -5,6 +5,7 @@
 #include <boost/asio/read.hpp>
 #include <boost/asio/write.hpp>
 #include <boost/asio/buffer.hpp>
+#include <boost/asio/spawn.hpp>
 #include "stream_base.h"
 
 namespace serialstorm {
