@@ -9,7 +9,7 @@
 
 namespace serialstorm {
 
-template<class SocketType>
+template<typename SocketType>
 class stream_asio_sync : public stream_base<SocketType, stream_asio_sync> {
   /// Stream handler to manage a asynchronous boost::asio stream
 public:

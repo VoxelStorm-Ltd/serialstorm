@@ -8,7 +8,7 @@
 
 namespace serialstorm {
 
-template<class StreamT>
+template<typename StreamT>
 class stream_std_fstream : public stream_base<StreamT, stream_std_fstream> {
   /// Stream handler to manage a std::fstream
 public:
