@@ -207,9 +207,8 @@ public:
     /// the stream, buffering and sending chunks at a time
     write_varint(datalength);
     std::vector<char> buffer(std::min(datalength, buffer_max_size));            // size the buffer to the data length or max size, as appropriate
-    size_t readbytes = 0;
     for(;;) {
-      readbytes = instream.readsome(buffer.data(), buffer.size());              // more efficient than just forcing it to fill the buffer
+      size_t readbytes = instream.readsome(buffer.data(), buffer.size());       // more efficient than just forcing it to fill the buffer
       write_buffer(buffer.data(), readbytes);
       datalength -= readbytes;
       if(datalength == 0 || readbytes == 0) {                                   // if it takes more than one buffer fill to read the data, repeat
