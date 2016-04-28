@@ -34,11 +34,11 @@ public:
   std::string read_string(T const stringlength) const {
     /// Read size bytes from the stream into a string asynchronously
     #ifdef NDEBUG
-      std::string string(stringlength, '\0');               // use null byte as default fill to minimise risk in release mode
+      std::string string(stringlength, '\0');                                   // use null byte as default fill to minimise risk in release mode
     #else
-      std::string string(stringlength, '?');                // use ? as a marker character to visibly show if we somehow end up with a short read
+      std::string string(stringlength, '?');                                    // use ? as a marker character to visibly show if we somehow end up with a short read
     #endif
-    read_buffer(&string[0], string.size());                 // copy-less string-filling buffer hack from http://stackoverflow.com/a/19623133/1678468
+    read_buffer(&string[0], string.size());                                     // copy-less string-filling buffer hack from http://stackoverflow.com/a/19623133/1678468
     return string;
   }
 

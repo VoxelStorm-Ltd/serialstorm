@@ -13,11 +13,11 @@ template<typename StreamParam, template<class> class StreamT>
 class stream_base {
   /// CRTP style static polymorphic base class for streams
 private:
-  enum class varint_size : uint8_t {        // the first byte that defines the size of unsigned integer this varint contains
-    UINT_8  = 0b10000000u,                  // 1 byte, also bitmask to detect if this is a full byte
-    UINT_16 = 0b10000001u,                  // 2 bytes
-    UINT_32 = 0b10000010u,                  // 4 bytes
-    UINT_64 = 0b10000011u                   // 8 bytes
+  enum class varint_size : uint8_t {                                            // the first byte that defines the size of unsigned integer this varint contains
+    UINT_8  = 0b10000000u,                                                      // 1 byte, also bitmask to detect if this is a full byte
+    UINT_16 = 0b10000001u,                                                      // 2 bytes
+    UINT_32 = 0b10000010u,                                                      // 4 bytes
+    UINT_64 = 0b10000011u                                                       // 8 bytes
   };
 
 public:
@@ -49,23 +49,23 @@ public:
     ///   first byte to get x, and read 2^x bytes as the uint, and try to fit it
     ///   into the supplied template type (which may overflow).
     uint8_t datasize(read_pod<uint8_t>());
-    if(datasize & static_cast<uint8_t>(varint_size::UINT_8)) {  // uint8_t half-byte (128), sent on its own
+    if(datasize & static_cast<uint8_t>(varint_size::UINT_8)) {                  // uint8_t half-byte (128), sent on its own
       switch(static_cast<varint_size>(datasize)) {
-      case varint_size::UINT_8:                                 // read a uint8_t  (1 byte)
+      case varint_size::UINT_8:                                                 // read a uint8_t  (1 byte)
         return cast_if_required<T>(read_pod<uint8_t>());
-      case varint_size::UINT_16:                                // read a uint16_t (2 bytes)
+      case varint_size::UINT_16:                                                // read a uint16_t (2 bytes)
         return cast_if_required<T>(read_pod<uint16_t>());
-      case varint_size::UINT_32:                                // read a uint32_t (4 bytes)
+      case varint_size::UINT_32:                                                // read a uint32_t (4 bytes)
         return cast_if_required<T>(read_pod<uint32_t>());
-      case varint_size::UINT_64:                                // read a uint64_t (8 bytes)
+      case varint_size::UINT_64:                                                // read a uint64_t (8 bytes)
         return cast_if_required<T>(read_pod<uint64_t>());
-      default:                                                  // unknown type, protocol error
+      default:                                                                  // unknown type, protocol error
         std::stringstream ss;
         ss << "Varint size " << static_cast<uint64_t>(datasize) << " is not in the protocol";
         throw std::runtime_error(ss.str());
       }
-    } else {                                              // this isn't a data size, this is a nibble (half-byte) containing the value itself
-      return datasize;                                    // the first byte is the value itself
+    } else {                                                                    // this isn't a data size, this is a nibble (half-byte) containing the value itself
+      return datasize;                                                          // the first byte is the value itself
     }
   }
 
@@ -81,7 +81,7 @@ public:
     /// template parameter type, and optionally limit the string to a maximum
     /// length to prevent overflow or DOS attacks
     T const stringlength(read_pod<T>());
-    if(length_max != 0 && stringlength > length_max) {      // optionally limit the info length to a safe maximum
+    if(length_max != 0 && stringlength > length_max) {                          // optionally limit the info length to a safe maximum
       std::stringstream ss;
       ss << "Fixed varstring length " << stringlength << " exceeded the permitted maximum of " << length_max;
       throw std::runtime_error(ss.str());
@@ -94,7 +94,7 @@ public:
     /// from a varint and optionally limit the string to a maximum length to
     /// prevent overflow or DOS attacks
     size_t const stringlength(read_varint<size_t>());
-    if(length_max != 0 && stringlength > length_max) {      // optionally limit the info length to a safe maximum
+    if(length_max != 0 && stringlength > length_max) {                          // optionally limit the info length to a safe maximum
       std::stringstream ss;
       ss << "Varstring length " << stringlength << " exceeded the permitted maximum of " << length_max;
       throw std::runtime_error(ss.str());
@@ -104,19 +104,19 @@ public:
 
   inline void read_varblob(std::ostream &outstream,
                            size_t const length_max = 0,
-                           size_t const buffer_max_size = 1024 * 1024) const {    // maximum buffer size until write out to stream, tuneable
+                           size_t const buffer_max_size = 1024 * 1024) const {  // maximum buffer size until write out to stream, tuneable
     /// Read a sequence of binary data of arbitrary length using a buffer and output to a stream
     size_t datalength(read_varint<size_t>());
-    if(length_max != 0 && datalength > length_max) {                    // optionally limit the info length to a safe maximum
+    if(length_max != 0 && datalength > length_max) {                            // optionally limit the info length to a safe maximum
       std::stringstream ss;
       ss << "Binary blob length " << datalength << " exceeded the permitted maximum of " << length_max;
       throw std::runtime_error(ss.str());
     }
-    std::vector<char> buffer(std::min(datalength, buffer_max_size));    // size the buffer to the data length or max size, as appropriate
-    for(; datalength != 0; datalength -= buffer.size()) {               // if it takes more than one buffer fill to read the data, repeat
-      buffer.resize(std::min(datalength, buffer_max_size));             // shrink the buffer if there's not enough data left to fill it
-      read_buffer(buffer.data(), buffer.size());                        // you can write to the vector data directly
-      outstream.write(buffer.data(), buffer.size());                    // blast it to the output stream - this could be made asynchronous
+    std::vector<char> buffer(std::min(datalength, buffer_max_size));            // size the buffer to the data length or max size, as appropriate
+    for(; datalength != 0; datalength -= buffer.size()) {                       // if it takes more than one buffer fill to read the data, repeat
+      buffer.resize(std::min(datalength, buffer_max_size));                     // shrink the buffer if there's not enough data left to fill it
+      read_buffer(buffer.data(), buffer.size());                                // you can write to the vector data directly
+      outstream.write(buffer.data(), buffer.size());                            // blast it to the output stream - this could be made asynchronous
     }
   }
 
@@ -146,19 +146,19 @@ public:
     ///   Designed to work with uints only.  If our int is smaller than 128, we
     ///   simply write it as-is, sign bit unset.  Otherwise we flip the sign bit
     ///   on the first byte, and set the value to log2 of the number of bytes.
-    if(uint < static_cast<uint8_t>(varint_size::UINT_8)) {      // uint8_t half-byte (128), sent on its own
+    if(uint < static_cast<uint8_t>(varint_size::UINT_8)) {                      // uint8_t half-byte (128), sent on its own
       write_pod(static_cast<uint8_t>(uint));
-    } else if(uint <= std::numeric_limits<uint8_t>::max()) {    // fits in a uint8_t (256 aka 0b1'00000000 or 0x1'00)
-      write_pod(varint_size::UINT_8);                           // 1 byte
+    } else if(uint <= std::numeric_limits<uint8_t>::max()) {                    // fits in a uint8_t (256 aka 0b1'00000000 or 0x1'00)
+      write_pod(varint_size::UINT_8);                                           // 1 byte
       write_pod(static_cast<uint8_t>(uint));
-    } else if(uint <= std::numeric_limits<uint16_t>::max()) {   // fits in a uint16_t (65536 aka 0b1'00000000'00000000 or 0x1'00'00)
-      write_pod(varint_size::UINT_16);                          // 2 bytes
+    } else if(uint <= std::numeric_limits<uint16_t>::max()) {                   // fits in a uint16_t (65536 aka 0b1'00000000'00000000 or 0x1'00'00)
+      write_pod(varint_size::UINT_16);                                          // 2 bytes
       write_pod(static_cast<uint16_t>(uint));
-    } else if(uint <= std::numeric_limits<uint32_t>::max()) {   // fits in a uint32_t (4294967296 aka 0b1'00000000'00000000'00000000'00000000 or 0x1'00'00'00'00)
-      write_pod(varint_size::UINT_32);                          // 4 bytes
+    } else if(uint <= std::numeric_limits<uint32_t>::max()) {                   // fits in a uint32_t (4294967296 aka 0b1'00000000'00000000'00000000'00000000 or 0x1'00'00'00'00)
+      write_pod(varint_size::UINT_32);                                          // 4 bytes
       write_pod(static_cast<uint32_t>(uint));
-    } else {                                                    // assume uint64_t (18446744073709551616 aka 0x1'0000'0000'0000'0000) max size
-      write_pod(varint_size::UINT_64);                          // 8 bytes
+    } else {                                                                    // assume uint64_t (18446744073709551616 aka 0x1'0000'0000'0000'0000) max size
+      write_pod(varint_size::UINT_64);                                          // 8 bytes
       write_pod(static_cast<uint64_t>(uint));
     }
   }
