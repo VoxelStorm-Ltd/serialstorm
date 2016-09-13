@@ -2,6 +2,7 @@
 #define STREAM_STD_FSTREAM_H_INCLUDED
 
 #include "stream_base.h"
+#include <fstream>
 #ifndef NDEBUG
   #include <iostream>
 #endif
