@@ -10,6 +10,7 @@
 namespace serialstorm {
 
 template<typename SocketType>
+class stream_asio_sync : public stream_base<SocketType, stream_asio_sync> {
   /// Stream handler to manage a asynchronous boost::asio stream
 public:
   boost::asio::basic_stream_socket<SocketType> &socket;
@@ -50,3 +51,30 @@ public:
     /// Write an asio native buffer (or whatever fits in its place) to the stream synchronously
     boost::asio::write(socket, buffer);
   }
+  template<typename T>
+  inline void write_buffer(T const *data, size_t const size) {
+    /// Write a block of data of the specified size to the stream from the target buffer synchronously
+    write_buffer(boost::asio::buffer(data, size));
+  }
+
+  template <typename T>
+  inline void write_string(std::basic_string<T> const &string) {
+    /// Write a string to the stream synchronously
+    write_buffer(boost::asio::buffer(string));
+  }
+
+  template <typename T>
+  inline void write_blob(std::vector<T> const &blob) {
+    /// Write a blob to the stream synchronously
+    write_buffer(boost::asio::buffer(blob));
+  }
+  template <typename T>
+  inline void write_blob(std::vector<T> const &blob, size_t const size) {
+    /// Write a blob of specific size to the stream synchronously
+    write_buffer(boost::asio::buffer(blob, size));
+  }
+};
+
+}
+
+#endif // STREAM_ASIO_SYNC_H_INCLUDED
