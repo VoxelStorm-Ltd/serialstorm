@@ -1,5 +1,5 @@
-#ifndef STREAM_ASIO_SYNC_H_INCLUDED
-#define STREAM_ASIO_SYNC_H_INCLUDED
+#ifndef SERIALSTORM_STREAM_ASIO_SYNC_H_INCLUDED
+#define SERIALSTORM_STREAM_ASIO_SYNC_H_INCLUDED
 
 #include <boost/asio/basic_stream_socket.hpp>
 #include <boost/asio/read.hpp>
@@ -77,4 +77,4 @@ public:
 
 }
 
-#endif // STREAM_ASIO_SYNC_H_INCLUDED
+#endif // SERIALSTORM_STREAM_ASIO_SYNC_H_INCLUDED
