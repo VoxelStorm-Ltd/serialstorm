@@ -1,11 +1,22 @@
-#ifndef STREAM_BASE_H_INCLUDED
-#define STREAM_BASE_H_INCLUDED
+#ifndef SERIALSTORM_STREAM_BASE_H_INCLUDED
+#define SERIALSTORM_STREAM_BASE_H_INCLUDED
 
 #include <vector>
 #include <sstream>
 #include <stdexcept>
 #include <limits>
 #include "cast_if_required.h"
+
+#if defined(SERIALSTORM_DEBUG_VERIFY_POD) || defined(SERIALSTORM_DEBUG_VERIFY_STRING) || defined(SERIALSTORM_DEBUG_VERIFY_BUFFER) || defined(SERIALSTORM_DEBUG_VERIFY_BLOB)
+  #define SERIALSTORM_DEBUG_VERIFY
+  // enable extra debugging measure: write verification headers and footers for every single piece of data serialised and verify on deserialisation
+  #warning SerialStorm: extra debugging verification is enabled, this is not interoperable with instances where it is disabled.
+
+  #ifndef SERIALSTORM_DEBUG_VERIFY_DELIMITER
+    #define SERIALSTORM_DEBUG_VERIFY_DELIMITER std::string("_X_")
+  #endif // SERIALSTORM_DEBUG_VERIFY_DELIMITER
+
+#endif // SERIALSTORM_DEBUG_VERIFY
 
 namespace serialstorm {
 
@@ -25,19 +36,37 @@ public:
   template<typename T>
   void read_buffer(T *data, size_t const size) const {
     /// CRTP polymorphic buffer read function
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
+      check_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "B>", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
     static_cast<StreamT<StreamParam> const*>(this)->read_buffer(data, size);
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
+      check_verification("<B", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
   }
   template<typename T>
   void read_buffer(T *data) const {
     /// Wrapper function to automatically specify buffer size
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
+      check_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "B>", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
     read_buffer(data, sizeof(*data));
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
+      check_verification("<B", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
   }
 
   template<typename T>
   inline T read_pod() const {
     /// Read a plain old data value from the stream
+    #ifdef SERIALSTORM_DEBUG_VERIFY_POD
+      check_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "P>", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_POD
     T data;
     read_buffer(&data);
+    #ifdef SERIALSTORM_DEBUG_VERIFY_POD
+      check_verification("<P", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_POD
     return data;
   }
 
@@ -61,7 +90,7 @@ public:
         return cast_if_required<T>(read_pod<uint64_t>());
       default:                                                                  // unknown type, protocol error
         std::stringstream ss;
-        ss << "Varint size " << static_cast<uint64_t>(datasize) << " is not in the protocol";
+        ss << "SerialStorm: Varint size " << static_cast<uint64_t>(datasize) << " is not in the protocol";
         throw std::runtime_error(ss.str());
       }
     } else {                                                                    // this isn't a data size, this is a nibble (half-byte) containing the value itself
@@ -72,7 +101,13 @@ public:
   template<typename T>
   std::string read_string(T stringlength) const {
     /// CRTP polymorphic buffer read function: fill a string of the specified size from the stream
+    #ifdef SERIALSTORM_DEBUG_VERIFY_STRING
+      check_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "S>", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_STRING
     return static_cast<StreamT<StreamParam> const*>(this)->read_string(stringlength);
+    #ifdef SERIALSTORM_DEBUG_VERIFY_STRING
+      check_verification("<S", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_STRING
   }
 
   template<typename T>
@@ -83,7 +118,7 @@ public:
     T const stringlength(read_pod<T>());
     if(length_max != 0 && stringlength > length_max) {                          // optionally limit the info length to a safe maximum
       std::stringstream ss;
-      ss << "Fixed varstring length " << stringlength << " exceeded the permitted maximum of " << length_max;
+      ss << "SerialStorm: Fixed varstring length " << stringlength << " exceeded the permitted maximum of " << length_max;
       throw std::runtime_error(ss.str());
     }
     return read_string(stringlength);
@@ -96,7 +131,7 @@ public:
     size_t const stringlength(read_varint<size_t>());
     if(length_max != 0 && stringlength > length_max) {                          // optionally limit the info length to a safe maximum
       std::stringstream ss;
-      ss << "Varstring length " << stringlength << " exceeded the permitted maximum of " << length_max;
+      ss << "SerialStorm: Varstring length " << stringlength << " exceeded the permitted maximum of " << length_max;
       throw std::runtime_error(ss.str());
     }
     return read_string(stringlength);
@@ -106,18 +141,30 @@ public:
                            size_t const length_max = 0,
                            size_t const buffer_max_size = 1024 * 1024) const {  // maximum buffer size until write out to stream, tuneable
     /// Read a sequence of binary data of arbitrary length using a buffer and output to a stream
-    size_t datalength(read_varint<size_t>());
+    size_t const datalength(read_varint<size_t>());
     if(length_max != 0 && datalength > length_max) {                            // optionally limit the info length to a safe maximum
       std::stringstream ss;
-      ss << "Binary blob length " << datalength << " exceeded the permitted maximum of " << length_max;
+      ss << "SerialStorm: Binary blob length " << datalength << " exceeded the permitted maximum of " << length_max;
       throw std::runtime_error(ss.str());
     }
+    read_blob(outstream, datalength, buffer_max_size);
+  }
+  inline void read_blob(std::ostream &outstream,
+                        size_t datalength,
+                        size_t const buffer_max_size = 1024 * 1024) const {     // maximum buffer size until write out to stream, tuneable
+    /// Read a sequence of binary data of known length using a buffer and output to a stream
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BLOB
+      check_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "L>", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_BLOB
     std::vector<char> buffer(std::min(datalength, buffer_max_size));            // size the buffer to the data length or max size, as appropriate
     for(; datalength != 0; datalength -= buffer.size()) {                       // if it takes more than one buffer fill to read the data, repeat
       buffer.resize(std::min(datalength, buffer_max_size));                     // shrink the buffer if there's not enough data left to fill it
       read_buffer(buffer.data(), buffer.size());                                // you can write to the vector data directly
       outstream.write(buffer.data(), buffer.size());                            // blast it to the output stream - this could be made asynchronous
     }
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BLOB
+      check_verification("<L", __func__);
+    #endif // SERIALSTORM_DEBUG_VERIFY_BLOB
   }
 
   // ------------------------- Writing functions -------------------------------
@@ -125,19 +172,37 @@ public:
   inline void write_buffer(T const &buffer) {
     /// CRTP polymorphic buffer write function passing whatever native buffer the stream takes
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
+      write_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "B>");
+    #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
     static_cast<StreamT<StreamParam>*>(this)->write_buffer(buffer);
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
+      write_verification("<B");
+    #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
   }
   template<typename T>
   inline void write_buffer(T const *data, size_t const size) {
     /// CRTP polymorphic buffer write function
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
+      write_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "B>");
+    #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
     static_cast<StreamT<StreamParam>*>(this)->write_buffer(data, size);
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
+      write_verification("<B");
+    #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
   }
 
   template<typename T>
   inline void write_pod(T const &data) {
     /// Write a plain old data entity to the stream
+    #ifdef SERIALSTORM_DEBUG_VERIFY_POD
+      write_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "P>");
+    #endif // SERIALSTORM_DEBUG_VERIFY_POD
     write_buffer(&data, sizeof(data));
+    #ifdef SERIALSTORM_DEBUG_VERIFY_POD
+      write_verification("<P");
+    #endif // SERIALSTORM_DEBUG_VERIFY_POD
   }
 
   template<typename T>
@@ -166,7 +231,13 @@ public:
   inline void write_string(std::string const &string) {
     /// CRTP polymorphic buffer write function: write a bare string to the stream
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
+    #ifdef SERIALSTORM_DEBUG_VERIFY_STRING
+      write_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "S>");
+    #endif // SERIALSTORM_DEBUG_VERIFY_STRING
     static_cast<StreamT<StreamParam>*>(this)->write_string(string);
+    #ifdef SERIALSTORM_DEBUG_VERIFY_STRING
+      write_verification("<S");
+    #endif // SERIALSTORM_DEBUG_VERIFY_STRING
   }
 
   template<typename T>
@@ -186,13 +257,25 @@ public:
   inline void write_blob(std::vector<T> const &blob) {
     /// CTCP polymorphic buffer write function: write a bare blob to the stream
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BLOB
+      write_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "L>");
+    #endif // SERIALSTORM_DEBUG_VERIFY_BLOB
     static_cast<StreamT<StreamParam>*>(this)->write_blob(blob);
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BLOB
+      write_verification("<L");
+    #endif // SERIALSTORM_DEBUG_VERIFY_BLOB
   }
   template <typename T>
   inline void write_blob(std::vector<T> const &blob, size_t const size) {
     /// CTCP polymorphic buffer write function: write a bare blob to the stream
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BLOB
+      write_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "L>");
+    #endif // SERIALSTORM_DEBUG_VERIFY_BLOB
     static_cast<StreamT<StreamParam>*>(this)->write_blob(blob, size);
+    #ifdef SERIALSTORM_DEBUG_VERIFY_BLOB
+      write_verification("<L");
+    #endif // SERIALSTORM_DEBUG_VERIFY_BLOB
   }
 
   inline void write_varblob(std::vector<char> const &blob) {
@@ -217,8 +300,28 @@ public:
       buffer.resize(std::min(datalength, buffer_max_size));                     // shrink the buffer if there's not enough data left to fill it
     };
   }
+
+private:
+  #ifdef SERIALSTORM_DEBUG_VERIFY
+    inline void check_verification(std::string const &header,
+                                   std::string const &function_name = __PRETTY_FUNCTION__) const {
+      /// Verify a custom specified debugging header we expect from the stream
+      std::string data(header.length(), '?');
+      static_cast<StreamT<StreamParam> const*>(this)->read_buffer(&data[0], data.length());
+      if(data != header) {
+        std::stringstream ss;
+        ss << "SerialStorm: Verification failed when attempting " << function_name << ": expected \"" << header << "\" and got \"" << data << "\"" << std::endl;
+        throw std::runtime_error(ss.str());
+      }
+    }
+
+    inline void write_verification(std::string const &header) {
+      /// Write a custom specified debugging header into the stream
+      static_cast<StreamT<StreamParam>*>(this)->write_buffer(header.c_str(), header.length());
+    }
+  #endif // SERIALSTORM_DEBUG_VERIFY
 };
 
 }
 
-#endif // STREAM_BASE_H_INCLUDED
+#endif // SERIALSTORM_STREAM_BASE_H_INCLUDED
