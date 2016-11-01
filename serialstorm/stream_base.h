@@ -20,7 +20,7 @@
 
 namespace serialstorm {
 
-template<typename StreamParam, template<class> class StreamT>
+template<typename StreamParam, template<typename> typename StreamT>
 class stream_base {
   /// CRTP style static polymorphic base class for streams
 private:

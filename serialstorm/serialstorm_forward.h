@@ -3,7 +3,7 @@
 
 namespace serialstorm {
 
-template<typename StreamParam, template<class> class StreamT>
+template<typename StreamParam, template<typename> class StreamT>
 class stream_base;
 
 template<typename StreamT>
