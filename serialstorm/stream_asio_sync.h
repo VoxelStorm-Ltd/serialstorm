@@ -75,3 +75,6 @@ public:
   }
 };
 
+}
+
+#endif // SERIALSTORM_STREAM_ASIO_SYNC_H_INCLUDED

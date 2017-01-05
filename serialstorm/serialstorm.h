@@ -7,3 +7,5 @@
 #include "stream_asio_sync.h"
 #include "stream_asio_async.h"
 #include "stream_std_fstream.h"
+
+#endif // SERIALSTORM_H_INCLUDED
