@@ -10,12 +10,12 @@
 namespace serialstorm {
 
 template<typename StreamT>
-class stream_std_fstream : public stream_base<StreamT, stream_std_fstream> {
-  /// Stream handler to manage a std::fstream
+class stream_std_stream : public stream_base<StreamT, stream_std_stream> {
+  /// Stream handler to manage a std::istream, std::ostream, std::fstream etc
 public:
   StreamT &stream;
 
-  constexpr explicit stream_std_fstream(StreamT &new_stream)
+  constexpr explicit stream_std_stream(StreamT &new_stream)
     : stream(new_stream) {
     /// Specific constructor
   }
