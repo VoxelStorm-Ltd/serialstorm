@@ -15,8 +15,17 @@
   #ifndef SERIALSTORM_DEBUG_VERIFY_DELIMITER
     #define SERIALSTORM_DEBUG_VERIFY_DELIMITER std::string("_X_")
   #endif // SERIALSTORM_DEBUG_VERIFY_DELIMITER
+#endif
 
-#endif // SERIALSTORM_DEBUG_VERIFY
+#if defined(__EMSCRIPTEN__) && !defined(NO_DISABLE_EXCEPTION_CATCHING)
+  // emscripten does not support exceptions by default
+  #include <iostream>
+  #define REPORT_ERROR std::cerr << "ERROR: " << ss.str() << std::endl; return {};
+  #define REPORT_ERROR_NORETURN std::cerr << "ERROR: " << ss.str() << std::endl; return;
+#else
+  #define REPORT_ERROR throw std::runtime_error(ss.str());
+  #define REPORT_ERROR_NORETURN throw std::runtime_error(ss.str());
+#endif
 
 namespace serialstorm {
 
@@ -91,7 +100,7 @@ public:
       default:                                                                  // unknown type, protocol error
         std::stringstream ss;
         ss << "SerialStorm: Varint size " << static_cast<uint64_t>(datasize) << " is not in the protocol";
-        throw std::runtime_error(ss.str());
+        REPORT_ERROR
       }
     } else {                                                                    // this isn't a data size, this is a nibble (half-byte) containing the value itself
       return datasize;                                                          // the first byte is the value itself
@@ -119,7 +128,7 @@ public:
     if(length_max != 0 && stringlength > length_max) {                          // optionally limit the info length to a safe maximum
       std::stringstream ss;
       ss << "SerialStorm: Fixed varstring length " << stringlength << " exceeded the permitted maximum of " << length_max;
-      throw std::runtime_error(ss.str());
+      REPORT_ERROR
     }
     return read_string(stringlength);
   }
@@ -132,7 +141,7 @@ public:
     if(length_max != 0 && stringlength > length_max) {                          // optionally limit the info length to a safe maximum
       std::stringstream ss;
       ss << "SerialStorm: Varstring length " << stringlength << " exceeded the permitted maximum of " << length_max;
-      throw std::runtime_error(ss.str());
+      REPORT_ERROR
     }
     return read_string(stringlength);
   }
@@ -145,7 +154,7 @@ public:
     if(length_max != 0 && datalength > length_max) {                            // optionally limit the info length to a safe maximum
       std::stringstream ss;
       ss << "SerialStorm: Binary blob length " << datalength << " exceeded the permitted maximum of " << length_max;
-      throw std::runtime_error(ss.str());
+      REPORT_ERROR_NORETURN
     }
     read_blob(outstream, datalength, buffer_max_size);
   }
@@ -311,7 +320,7 @@ private:
       if(data != header) {
         std::stringstream ss;
         ss << "SerialStorm: Verification failed when attempting " << function_name << ": expected \"" << header << "\" and got \"" << data << "\"" << std::endl;
-        throw std::runtime_error(ss.str());
+        REPORT_ERROR_NORETURN
       }
     }
 

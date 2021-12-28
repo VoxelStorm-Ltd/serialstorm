@@ -20,6 +20,10 @@ public:
     /// Specific constructor
   }
 
+  stream_std_stream(const stream_std_stream&) = delete;
+
+  stream_std_stream& operator=(const stream_std_stream&) = delete;
+
   template<typename T>
   void read_buffer(T *data, size_t const size) const {
     /// Read a block of data of the specified size from the stream to the target buffer asynchronously
