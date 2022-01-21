@@ -214,7 +214,7 @@ public:
     #endif // SERIALSTORM_DEBUG_VERIFY_POD
   }
 
-  template<typename T>
+  template<typename T, class = typename std::enable_if<std::is_unsigned<T>::value>::type>
   inline void write_varint(T const uint) {
     /// Write a variable-length unsigned integer to the stream
     ///   Designed to work with uints only.  If our int is smaller than 128, we

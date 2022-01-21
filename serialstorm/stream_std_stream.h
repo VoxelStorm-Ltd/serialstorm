@@ -30,7 +30,9 @@ public:
     stream.read(reinterpret_cast<char*>(data), size);
     #ifndef NDEBUG
       if(!stream) {
-        std::cout << "SerialStorm: WARNING: short read on stream: " << stream.gcount() << " read out of " << size << " requested." << std::endl;
+        std::stringstream ss;
+        ss << "SerialStorm: short read on stream: " << stream.gcount() << " read out of " << size << " requested." << std::endl;
+        REPORT_ERROR
       }
     #endif
   }
