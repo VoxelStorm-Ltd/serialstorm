@@ -27,7 +27,7 @@ public:
   template<typename T>
   void read_buffer(T *data, size_t const size) const {
     /// Read a block of data of the specified size from the stream to the target buffer asynchronously
-    stream.read(reinterpret_cast<char*>(data), size);
+    stream.read(reinterpret_cast<char*>(data), static_cast<std::streamsize>(size));
     #ifndef NDEBUG
       if(!stream) {
         std::stringstream ss;
@@ -65,7 +65,7 @@ public:
   template<typename T>
   inline void write_buffer(T const *data, size_t const size) {
     /// Write a block of data of the specified size to the stream from the target buffer
-    stream.write(reinterpret_cast<char const*>(data), size);
+    stream.write(reinterpret_cast<char const*>(data), static_cast<std::streamsize>(size));
   }
 
   template <typename T>

@@ -169,7 +169,7 @@ public:
     for(; datalength != 0; datalength -= buffer.size()) {                       // if it takes more than one buffer fill to read the data, repeat
       buffer.resize(std::min(datalength, buffer_max_size));                     // shrink the buffer if there's not enough data left to fill it
       read_buffer(buffer.data(), buffer.size());                                // you can write to the vector data directly
-      outstream.write(buffer.data(), buffer.size());                            // blast it to the output stream - this could be made asynchronous
+      outstream.write(buffer.data(), static_cast<std::streamsize>(buffer.size())); // blast it to the output stream - this could be made asynchronous
     }
     #ifdef SERIALSTORM_DEBUG_VERIFY_BLOB
       check_verification("<L", __func__);
@@ -300,9 +300,9 @@ public:
     write_varint(datalength);
     std::vector<char> buffer(std::min(datalength, buffer_max_size));            // size the buffer to the data length or max size, as appropriate
     for(;;) {
-      size_t readbytes = instream.readsome(buffer.data(), buffer.size());       // more efficient than just forcing it to fill the buffer
+      std::streamsize readbytes = instream.readsome(buffer.data(), static_cast<std::streamsize>(buffer.size())); // more efficient than just forcing it to fill the buffer
       write_buffer(buffer.data(), readbytes);
-      datalength -= readbytes;
+      datalength -= static_cast<size_t>(readbytes);
       if(datalength == 0 || readbytes == 0) {                                   // if it takes more than one buffer fill to read the data, repeat
         break;
       }
