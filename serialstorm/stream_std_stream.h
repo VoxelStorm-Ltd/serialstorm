@@ -32,7 +32,7 @@ public:
       if(!stream) {
         std::stringstream ss;
         ss << "SerialStorm: short read on stream: " << stream.gcount() << " read out of " << size << " requested." << std::endl;
-        REPORT_ERROR
+        REPORT_ERROR_NORETURN
       }
     #endif
   }
