@@ -40,7 +40,15 @@ private:
     UINT_64 = 0b10000011u                                                       // 8 bytes
   };
 
+  mutable size_t read_pos = 0;                                                  // tracked read position in the stream, for tellp() - independent of underlying stream
+
 public:
+  // -------------------------- Status functions -------------------------------
+  size_t tellp() const {
+    /// Report read stream position, tracked independently of underlying stream
+    return read_pos;
+  }
+
   // ------------------------- Reading functions -------------------------------
   template<typename T>
   void read_buffer(T *data, size_t const size) const {
@@ -52,6 +60,7 @@ public:
     #ifdef SERIALSTORM_DEBUG_VERIFY_BUFFER
       check_verification("<B", __func__);
     #endif // SERIALSTORM_DEBUG_VERIFY_BUFFER
+    read_pos += size;
   }
   template<typename T>
   void read_buffer(T *data) const {

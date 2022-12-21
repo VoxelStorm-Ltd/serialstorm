@@ -71,7 +71,7 @@ public:
   template <typename T>
   inline void write_string(std::basic_string<T> const &string) {
     /// Write a string to the stream
-    stream.write(string.c_str(), string.size());
+    stream.write(string.c_str(), static_cast<std::streamsize>(string.size()));
   }
 
   template <typename T>
