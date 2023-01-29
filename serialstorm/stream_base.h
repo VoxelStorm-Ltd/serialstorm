@@ -328,7 +328,7 @@ private:
       static_cast<StreamT<StreamParam> const*>(this)->read_buffer(&data[0], data.length());
       if(data != header) {
         std::stringstream ss;
-        ss << "SerialStorm: Verification failed when attempting " << function_name << ": expected \"" << header << "\" and got \"" << data << "\"" << std::endl;
+        ss << "SerialStorm: Verification failed when attempting " << function_name << ": expected \"" << header << "\" and got \"" << data << "\"";
         REPORT_ERROR_NORETURN
       }
     }

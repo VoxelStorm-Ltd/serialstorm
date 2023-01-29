@@ -31,7 +31,7 @@ public:
     #ifndef NDEBUG
       if(!stream) {
         std::stringstream ss;
-        ss << "SerialStorm: short read on stream: " << stream.gcount() << " read out of " << size << " requested." << std::endl;
+        ss << "SerialStorm: short read on stream: " << stream.gcount() << " read out of " << size << " requested.";
         REPORT_ERROR_NORETURN
       }
     #endif
