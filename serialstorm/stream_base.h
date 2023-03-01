@@ -106,10 +106,13 @@ public:
         return cast_if_required<T>(read_pod<uint32_t>());
       case varint_size::UINT_64:                                                // read a uint64_t (8 bytes)
         return cast_if_required<T>(read_pod<uint64_t>());
+      #pragma GCC diagnostic push
+      #pragma GCC diagnostic ignored "-Wcovered-switch-default"
       default:                                                                  // unknown type, protocol error
         std::stringstream ss;
         ss << "SerialStorm: Varint size " << static_cast<uint64_t>(datasize) << " is not in the protocol";
         REPORT_ERROR
+      #pragma GCC diagnostic push
       }
     } else {                                                                    // this isn't a data size, this is a nibble (half-byte) containing the value itself
       return datasize;                                                          // the first byte is the value itself
@@ -316,7 +319,7 @@ public:
         break;
       }
       buffer.resize(std::min(datalength, buffer_max_size));                     // shrink the buffer if there's not enough data left to fill it
-    };
+    }
   }
 
 private:
