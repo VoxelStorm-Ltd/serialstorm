@@ -107,7 +107,9 @@ public:
       case varint_size::UINT_64:                                                // read a uint64_t (8 bytes)
         return cast_if_required<T>(read_pod<uint64_t>());
       #pragma GCC diagnostic push
-      #pragma GCC diagnostic ignored "-Wcovered-switch-default"
+      #ifdef __clang__
+        #pragma GCC diagnostic ignored "-Wcovered-switch-default"
+      #endif // __clang__
       default:                                                                  // unknown type, protocol error
         std::stringstream ss;
         ss << "SerialStorm: Varint size " << static_cast<uint64_t>(datasize) << " is not in the protocol";
