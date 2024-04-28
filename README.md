@@ -21,8 +21,6 @@ The second drawback is that such protocols, if they rely only on delimiters, are
 
 While SerialStorm doesn't force any kind of consistency checking on you, if you want to include padding bytes or delimiters of your own in your stream, and verify those for consistency, you can of course do that yourself.  Just include whatever delimiters or verification bytes you feel are necessary as part of your protocol - either as members of your structs, or as steps in your protocol - and verify them as you read.
 
-### CPU time is cheaper than network time
-
 ### Type agreement is up to the user
 Many serialisation protocols force an agreement of data types between sender and receiver.  They do this either by generating code which defines rigid structures (such as protobufs), or by sending type information on the wire along with the data itself.  The drawback of the latter approach is obvious, as we are always sending information that the recipient should often already know.  The drawback of the former approach is that it often forces memory copies on the reader or writer side, to coerce application data into the network data format.
 
@@ -64,6 +62,31 @@ As a result, SerialStorm can act as a core building block in any networking libr
 
 ### Writing
 
+void write_buffer(T const &buffer)
+
+void write_buffer(T const *data, size_t const size)
+
+void write_pod(T const &data)
+
+void write_varint(T const uint)
+
+void write_string(std::string const &string)
+
+void write_varstring_fixed(std::string const &string)
+
+void write_varstring(std::string const &string)
+
+void write_blob(std::vector<T> const &blob) 
+
+void write_blob(std::vector<T> const &blob, size_t const size)
+
+void write_varblob(std::vector<char> const &blob)
+
+void write_varblob(std::istream &instream,
+                            size_t datalength,
+                            size_t const buffer_max_size = 64 * 1024 * 1024)
+
+
 ### Reading
 
 void read_buffer(T *data, size_t const size)
@@ -80,13 +103,13 @@ std::string read_varstring_fixed(size_t const length_max = 0)
 
 std::string read_varstring(size_t const length_max = 0)
 
-read_varblob(std::ostream &outstream,
-                           size_t const length_max = 0,
-                           size_t const buffer_max_size = 1024 * 1024)
-
 read_blob(std::ostream &outstream,
                         size_t datalength,
                         size_t const buffer_max_size = 1024 * 1024)
+
+read_varblob(std::ostream &outstream,
+                           size_t const length_max = 0,
+                           size_t const buffer_max_size = 1024 * 1024)
 
 
 ### Verification mode
