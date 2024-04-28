@@ -68,6 +68,8 @@ This is the key building block used in `VarString` and `VarBlob`, and it's the i
 
 ### Data types
 
+A key concept to understand is that in SerialStorm, all data types are interchangeable; it's up to you to ensure what you're transmitting is compatible with what you're receiving, but you can interpret data you receive however you like - read functions don't have to match the write functions used to send that data.  For example, a server may send a file using the `blob` functions, and the client may receive them as a `buffer`, or vice versa.  A `VarString` can be interpreted as a `VarBlob`, or split into components and read manually as a `VarInt` followed by a `String`.  This flexibility allows you to store data directly into its final destination, without incurring unnecessary buffer copies.
+
 #### POD
 At its core, all of the data you send is plain old data (POD).  In SerialStorm, we call it POD if `sizeof(my_data)` covers the whole of the data you wish to send, and this does not contain pointers to other memory.  So, you would use POD functions to send simple types such as fixed size integers or floats, simple structs containing fixed size data, etc.
 
@@ -80,12 +82,17 @@ In SerialStorm, a buffer is defined by an address in memory and a size.  SerialS
 An unsigned integer of an arbitrary size, encoded in the shortest viable length for the value it contains.  See the section on VarInt encoding for more info about this special type.
 
 #### String
+Raw string data.  This does not attempt to encode its length, so the exact length of the string must be known in advance - either hard-coded, or sent ahead with an integer.  This is rarely used on its own, but is occasionally useful when transmitting fixed length strings.  For variable length strings, it's easier to use `VarString` below.
 
 #### VarString
+Raw string data, prefixed with a VarInt.  This is the simplest way to transfer string data.  Reading functions allow you to specify an optional buffer size limit, to prevent overflow attacks by untrusted clients.
 
 #### Blob
+A fixed size blob of raw binary data.  In SerialStorm, blob functions differ from buffer functions in that they are read and written in chunks.  The use case is to limit required memory allocations, even for very large binary transmissions.  The `read_blob` functions allow you to specify a chunk size for the buffer to use.  Vectors of bytes can be sent as blobs, as can std::istreams, making this useful for sending files directly from a filesystem.  For a plain blob, the exact size must be known by the recipient.  For dynamically sized objects, use `VarBlob`.
 
 #### VarBlob
+
+Similar to `VarString`, this is simply a `Blob` prefixed with a `VarInt`, used to encode the size of the blob data.
 
 ## Usage
 
