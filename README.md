@@ -101,51 +101,85 @@ Similar to `VarString`, this is simply a `Blob` prefixed with a `VarInt`, used t
 ### Writing
 
 ```cpp
-void write_buffer(T const &buffer)
-```
-
-```cpp
-void write_buffer(T const *data, size_t const size)
-```
-
-```cpp
 void write_pod(T const &data)
 ```
+Write plain data of type `T`.  Use this to transmit basic types, or structs composed of basic types.
+
+The recipient must read with an equivalent `read_pod<T>()` function.
+
+If using this to send structs, see notes above about packing.
 
 ```cpp
 void write_varint(T const uint)
 ```
+Write a `VarInt` - a variable sized unsigned integer.  The size is determined by how big a number you're sending, not the maximum range of the type.  This should be your go-to whenever sending numerical information, unless you know for sure you need the entire size of a fixed integer.
+
+Note this is usable with unsigned integers only.  For signed integers, prefer a fixed type rather than casting to unsigned and using `VarInt` - the latter will work, but will often end up using the largest representation (9 bytes) for negative numbers.
+
+The recipient must read from the stream with `read_varint`.
 
 ```cpp
 void write_string(std::string const &string)
 ```
+Write a string of a fixed length.  When writing, SerialStorm will send whatever size the string is, but the client must know the size in advance in order to read this.  Useful for fixed size strings - for most strings, prefer the `varstring` functions instead.
 
-```cpp
-void write_varstring_fixed(std::string const &string)
-```
+The recipient should read from the stream with `read_string`, `read_buffer`, or `read_blob`.
 
 ```cpp
 void write_varstring(std::string const &string)
 ```
+Write a string of an arbitrary length, along with info about its length.  This is functionally equivalent to manually writing `write_varint(string.length())` followed by `write_string(string)`.
+
+The recipient should read this with `read_varstring` or `read_varint` followed by `read_string`, `read_buffer`, or `read_blob`.
+
+```cpp
+void write_varstring_fixed(std::string const &string)
+```
+A special variant of `write_varstring`, which uses a fixed size integer instead of `VarInt`.  The size of the integer is determined by the size type of the string, usually `size_t`.  Note that the size type is platform-dependent, so take care that you have compatibility between sender and recipient.  Unless you have a specific reason to use this, prefer `write_varstring`.  
+
+The recipient should read this with `read_varstring_fixed`, or `read_pod<size_t>()` followed by `read_string`, `read_buffer`, or `read_blob`.
+
+```cpp
+void write_buffer(T const &buffer)
+```
+Write a buffer of binary data, with size defined by `sizeof(buffer)`.  Cannot be read by the recipient without knowing the size first.
+
+The recipient should read this with `read_buffer`, or `read_string`, or `read_blob`.
+
+```cpp
+void write_buffer(T const *data, size_t const size)
+```
+As above, this overload allows you to specify and address in memory and a size.  More commonly used for interoperation with C-style APIs.  The recipient must know the size to read this.
+
+The recipient should read this with `read_buffer`, or `read_string`, or `read_blob`.
 
 ```cpp
 void write_blob(std::vector<T> const &blob) 
 ```
+Sends a `std::vector` of any POD or struct type as a blob.  The recipient must know the size of the data to be received.
+
+The recipient should read this with `read_blob`, `read_buffer` or `read_string`.
 
 ```cpp
 void write_blob(std::vector<T> const &blob, size_t const size)
 ```
+As above, but with a fixed size - use to send a subset of the vector.  Take care to ensure that `size` is not be greater than `blob.size()`.
 
 ```cpp
 void write_varblob(std::vector<char> const &blob)
 ```
+Write a blob of arbitrary size, along with info about its size.  This is functionally equivalent to manually writing `write_varint(blob.size())` followed by `write_blob(blob)`.
+
+The recipient should read this with `read_varblob` or `read_varstring`, or with `read_varint` followed by `read_blob`, `read_buffer` or `read_string`.
 
 ```cpp
-void write_varblob(std::istream &instream,
-                            size_t datalength,
-                            size_t const buffer_max_size = 64 * 1024 * 1024)
+void write_varblob(std::istream &instream, size_t datalength, size_t const buffer_max_size = 64 * 1024 * 1024)
 ```
+Write a blob from an input stream (such as a file), along with info about its size.  The length `datalength` must be available to read from the stream.  Anything in the stream beyond `datalength` is left unconsumed.
 
+This function accepts an arbitrary max buffer size; if `buffer_max_size` is smaller than `datalength`, the data will be split into chunks of max buffer size or smaller.  Use this to keep memory growth under control when reading and writing simultaneously, for example when sending files from disk.
+
+The recipient should read this with `read_varblob` or `read_varstring`, or with `read_varint` followed by `read_blob`, `read_buffer` or `read_string`.
 
 ### Reading
 
