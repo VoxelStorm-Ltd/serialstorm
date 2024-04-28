@@ -100,55 +100,94 @@ Similar to `VarString`, this is simply a `Blob` prefixed with a `VarInt`, used t
 
 ### Writing
 
+```cpp
 void write_buffer(T const &buffer)
+```
 
+```cpp
 void write_buffer(T const *data, size_t const size)
+```
 
+```cpp
 void write_pod(T const &data)
+```
 
+```cpp
 void write_varint(T const uint)
+```
 
+```cpp
 void write_string(std::string const &string)
+```
 
+```cpp
 void write_varstring_fixed(std::string const &string)
+```
 
+```cpp
 void write_varstring(std::string const &string)
+```
 
+```cpp
 void write_blob(std::vector<T> const &blob) 
+```
 
+```cpp
 void write_blob(std::vector<T> const &blob, size_t const size)
+```
 
+```cpp
 void write_varblob(std::vector<char> const &blob)
+```
 
+```cpp
 void write_varblob(std::istream &instream,
                             size_t datalength,
                             size_t const buffer_max_size = 64 * 1024 * 1024)
+```
 
 
 ### Reading
 
+```cpp
 void read_buffer(T *data, size_t const size)
+```
 
+```cpp
 void read_buffer(T *data)
+```
 
+```cpp
 T read_pod()
+```
 
+```cpp
 T read_varint()
+```
 
+```cpp
 std::string read_string(T stringlength)
+```
 
+```cpp
 std::string read_varstring_fixed(size_t const length_max = 0)
+```
 
+```cpp
 std::string read_varstring(size_t const length_max = 0)
+```
 
+```cpp
 read_blob(std::ostream &outstream,
                         size_t datalength,
                         size_t const buffer_max_size = 1024 * 1024)
+```
 
+```cpp
 read_varblob(std::ostream &outstream,
                            size_t const length_max = 0,
                            size_t const buffer_max_size = 1024 * 1024)
-
+```
 
 ## Adding new streams
 
