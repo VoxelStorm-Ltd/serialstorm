@@ -109,15 +109,17 @@ The recipient must read with an equivalent `read_pod<T>()` function.
 
 If using this to send structs, see notes above about packing.
 
+---
 ```cpp
 void write_varint(T const uint)
 ```
-Write a `VarInt` - a variable sized unsigned integer.  The size is determined by how big a number you're sending, not the maximum range of the type.  This should be your go-to whenever sending numerical information, unless you know for sure you need the entire size of a fixed integer.
+Write a `VarInt` - a variable sized unsigned integer.  The size is determined by how big a number you're sending, not the maximum range of the type.  This should be your go-to whenever sending numerical information, unless you know for sure you need the entire size of a fixed integer.  It can send values up to the maximum that can be represented by `uint64_t`.
 
 Note this is usable with unsigned integers only.  For signed integers, prefer a fixed type rather than casting to unsigned and using `VarInt` - the latter will work, but will often end up using the largest representation (9 bytes) for negative numbers.
 
 The recipient must read from the stream with `read_varint`.
 
+---
 ```cpp
 void write_string(std::string const &string)
 ```
@@ -125,6 +127,7 @@ Write a string of a fixed length.  When writing, SerialStorm will send whatever 
 
 The recipient should read from the stream with `read_string`, `read_buffer`, or `read_blob`.
 
+---
 ```cpp
 void write_varstring(std::string const &string)
 ```
@@ -132,6 +135,7 @@ Write a string of an arbitrary length, along with info about its length.  This i
 
 The recipient should read this with `read_varstring` or `read_varint` followed by `read_string`, `read_buffer`, or `read_blob`.
 
+---
 ```cpp
 void write_varstring_fixed(std::string const &string)
 ```
@@ -139,6 +143,7 @@ A special variant of `write_varstring`, which uses a fixed size integer instead 
 
 The recipient should read this with `read_varstring_fixed`, or `read_pod<size_t>()` followed by `read_string`, `read_buffer`, or `read_blob`.
 
+---
 ```cpp
 void write_buffer(T const &buffer)
 ```
@@ -146,6 +151,7 @@ Write a buffer of binary data, with size defined by `sizeof(buffer)`.  Cannot be
 
 The recipient should read this with `read_buffer`, or `read_string`, or `read_blob`.
 
+---
 ```cpp
 void write_buffer(T const *data, size_t const size)
 ```
@@ -153,6 +159,7 @@ As above, this overload allows you to specify and address in memory and a size. 
 
 The recipient should read this with `read_buffer`, or `read_string`, or `read_blob`.
 
+---
 ```cpp
 void write_blob(std::vector<T> const &blob) 
 ```
@@ -160,11 +167,13 @@ Sends a `std::vector` of any POD or struct type as a blob.  The recipient must k
 
 The recipient should read this with `read_blob`, `read_buffer` or `read_string`.
 
+---
 ```cpp
 void write_blob(std::vector<T> const &blob, size_t const size)
 ```
 As above, but with a fixed size - use to send a subset of the vector.  Take care to ensure that `size` is not be greater than `blob.size()`.
 
+---
 ```cpp
 void write_varblob(std::vector<char> const &blob)
 ```
@@ -172,6 +181,7 @@ Write a blob of arbitrary size, along with info about its size.  This is functio
 
 The recipient should read this with `read_varblob` or `read_varstring`, or with `read_varint` followed by `read_blob`, `read_buffer` or `read_string`.
 
+---
 ```cpp
 void write_varblob(std::istream &instream, size_t datalength, size_t const buffer_max_size = 64 * 1024 * 1024)
 ```
@@ -184,44 +194,63 @@ The recipient should read this with `read_varblob` or `read_varstring`, or with 
 ### Reading
 
 ```cpp
-void read_buffer(T *data, size_t const size)
-```
-
-```cpp
-void read_buffer(T *data)
-```
-
-```cpp
 T read_pod()
 ```
+Read plain old data (POD) or a simple struct of type T, with `auto my_data{read_pod<my_type>()}`.  The size of the data must match what is sent.
 
+If using this to read a struct, see notes above about packing.
+
+---
 ```cpp
 T read_varint()
 ```
+Read a variable size unsigned integer (`VarInt`), interpreted as whatever type you specify.  The maximum size of the number it can represent is equivalent to `uint64_t`, so if you don't know the range of input you're expecting, use `read_varint<uint64_t>()`.
 
+---
 ```cpp
 std::string read_string(T stringlength)
 ```
+Read a string of a fixed length.  Length must match what is sent.
 
-```cpp
-std::string read_varstring_fixed(size_t const length_max = 0)
-```
-
+---
 ```cpp
 std::string read_varstring(size_t const length_max = 0)
 ```
+Read a string of arbitrary length.
 
-```cpp
-read_blob(std::ostream &outstream,
-                        size_t datalength,
-                        size_t const buffer_max_size = 1024 * 1024)
-```
+Optionally provide a maximum length limit, to prevent attacks by untrusted clients.
 
+---
 ```cpp
-read_varblob(std::ostream &outstream,
-                           size_t const length_max = 0,
-                           size_t const buffer_max_size = 1024 * 1024)
+std::string read_varstring_fixed(size_t const length_max = 0)
 ```
+Read a variable length string with a fixed size length identifier (sent by `write_varstring_fixed`).  Special-purpose - usually prefer `read_varstring`.  If using this, make sure that `size_t` is identical in size on the sender and recipient platforms.
+
+---
+```cpp
+void read_buffer(T *data, size_t const size)
+```
+Read binary data into a buffer at the given address, with the given size.  The `size` must match what is sent.
+
+---
+```cpp
+void read_buffer(T *data)
+```
+Read binary data into a buffer at the given address; `sizeof(*data)` must match what is sent.
+
+---
+```cpp
+read_blob(std::ostream &outstream, size_t datalength, size_t const buffer_max_size = 1024 * 1024)
+```
+Read binary data to a stream.  The data length must match what is sent.
+
+If `buffer_max_size` is specified and is smaller than `datalength`, the read will be split into smaller chunks to limit memory allocation.  Useful for reading large data to stream elsewhere, for example downloading a file to disk.
+
+---
+```cpp
+read_varblob(std::ostream &outstream, size_t const length_max = 0, size_t const buffer_max_size = 1024 * 1024)
+```
+As for `read_blob` above, but use to read data where the length is encoded as a `VarInt` up front, as with `write_varblob`.
 
 ## Adding new streams
 
@@ -229,9 +258,9 @@ TODO
 
 ### Verification mode
 
-TODO
+It is the user's responsibility to always read from the stream the same amount of data that is written, in order to keep the stream in sync.  How you ensure this is done is up to you.
 
-SERIALSTORM_DEBUG_VERIFY
+In order to assist in debugging, SerialStorm provides a basic verification mode, where it adds prefixes and suffixes to certain structures, and verifies those are received.  This is a compile-time switch, enabled by defining `SERIALSTORM_DEBUG_VERIFY`, or one of the more specific verification macros shown below.  If enabling this, ensure that both sides (server and client) are built with the same mode - otherwise, they will not be interoperable.
 
 ```cpp
 #if defined(SERIALSTORM_DEBUG_VERIFY_POD) || defined(SERIALSTORM_DEBUG_VERIFY_STRING) || defined(SERIALSTORM_DEBUG_VERIFY_BUFFER) || defined(SERIALSTORM_DEBUG_VERIFY_BLOB)
