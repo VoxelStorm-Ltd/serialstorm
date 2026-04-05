@@ -1,0 +1,17 @@
+write_pod / read_pod round-trip for integer types 1 0.00246419
+write_pod / read_pod round-trip for floating-point types 1 0.00222253
+write_pod / read_pod preserves byte-exact representation 1 0.00205916
+write_buffer / read_buffer with raw byte arrays 1 0.00210418
+write_varint / read_varint round-trip across all size bands 1 0.00208596
+write_varint / read_varint with different output types 1 0.00205919
+read_varint throws std::runtime_error on unknown size byte 1 0.00211083
+write_string / read_string bare (caller supplies length) 1 0.00207044
+write_varstring / read_varstring round-trip 1 0.00213645
+write_varstring_fixed / read_varstring_fixed round-trip 1 0.00222907
+write_blob / read_blob with known fixed length 1 0.00222701
+write_varblob / read_varblob (vector) round-trip 1 0.00250483
+write_varblob (stream) / read_varblob round-trip 1 0.00229571
+tellp tracks the number of bytes read so far 1 0.00217483
+mixed types serialised and deserialised in sequence 1 0.00213121
+repeated values of the same type serialised in sequence 1 0.00213292
+---

@@ -1,0 +1,323 @@
+Start testing: Apr 05 17:54 UTC
+----------------------------------------------------------
+1/16 Testing: write_pod / read_pod round-trip for integer types
+1/16 Test: write_pod / read_pod round-trip for integer types
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_pod / read_pod round-trip for integer types"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_pod / read_pod round-trip for integer types" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_pod / read_pod round-trip for integer types"
+Randomness seeded to: 1270474850
+===============================================================================
+All tests passed (8 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_pod / read_pod round-trip for integer types" end time: Apr 05 17:54 UTC
+"write_pod / read_pod round-trip for integer types" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/16 Testing: write_pod / read_pod round-trip for floating-point types
+2/16 Test: write_pod / read_pod round-trip for floating-point types
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_pod / read_pod round-trip for floating-point types"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_pod / read_pod round-trip for floating-point types" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_pod / read_pod round-trip for floating-point types"
+Randomness seeded to: 837564149
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_pod / read_pod round-trip for floating-point types" end time: Apr 05 17:54 UTC
+"write_pod / read_pod round-trip for floating-point types" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/16 Testing: write_pod / read_pod preserves byte-exact representation
+3/16 Test: write_pod / read_pod preserves byte-exact representation
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_pod / read_pod preserves byte-exact representation"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_pod / read_pod preserves byte-exact representation" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_pod / read_pod preserves byte-exact representation"
+Randomness seeded to: 4143010976
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_pod / read_pod preserves byte-exact representation" end time: Apr 05 17:54 UTC
+"write_pod / read_pod preserves byte-exact representation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/16 Testing: write_buffer / read_buffer with raw byte arrays
+4/16 Test: write_buffer / read_buffer with raw byte arrays
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_buffer / read_buffer with raw byte arrays"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_buffer / read_buffer with raw byte arrays" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_buffer / read_buffer with raw byte arrays"
+Randomness seeded to: 374653923
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_buffer / read_buffer with raw byte arrays" end time: Apr 05 17:54 UTC
+"write_buffer / read_buffer with raw byte arrays" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/16 Testing: write_varint / read_varint round-trip across all size bands
+5/16 Test: write_varint / read_varint round-trip across all size bands
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_varint / read_varint round-trip across all size bands"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_varint / read_varint round-trip across all size bands" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_varint / read_varint round-trip across all size bands"
+Randomness seeded to: 101532615
+===============================================================================
+All tests passed (30 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_varint / read_varint round-trip across all size bands" end time: Apr 05 17:54 UTC
+"write_varint / read_varint round-trip across all size bands" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/16 Testing: write_varint / read_varint with different output types
+6/16 Test: write_varint / read_varint with different output types
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_varint / read_varint with different output types"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_varint / read_varint with different output types" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_varint / read_varint with different output types"
+Randomness seeded to: 672950001
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_varint / read_varint with different output types" end time: Apr 05 17:54 UTC
+"write_varint / read_varint with different output types" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/16 Testing: read_varint throws std::runtime_error on unknown size byte
+7/16 Test: read_varint throws std::runtime_error on unknown size byte
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "read_varint throws std::runtime_error on unknown size byte"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"read_varint throws std::runtime_error on unknown size byte" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "read_varint throws std::runtime_error on unknown size byte"
+Randomness seeded to: 4193908844
+===============================================================================
+All tests passed (4 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"read_varint throws std::runtime_error on unknown size byte" end time: Apr 05 17:54 UTC
+"read_varint throws std::runtime_error on unknown size byte" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/16 Testing: write_string / read_string bare (caller supplies length)
+8/16 Test: write_string / read_string bare (caller supplies length)
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_string / read_string bare (caller supplies length)"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_string / read_string bare (caller supplies length)" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_string / read_string bare (caller supplies length)"
+Randomness seeded to: 106056453
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_string / read_string bare (caller supplies length)" end time: Apr 05 17:54 UTC
+"write_string / read_string bare (caller supplies length)" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/16 Testing: write_varstring / read_varstring round-trip
+9/16 Test: write_varstring / read_varstring round-trip
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_varstring / read_varstring round-trip"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_varstring / read_varstring round-trip" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_varstring / read_varstring round-trip"
+Randomness seeded to: 774522810
+===============================================================================
+All tests passed (6 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_varstring / read_varstring round-trip" end time: Apr 05 17:54 UTC
+"write_varstring / read_varstring round-trip" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/16 Testing: write_varstring_fixed / read_varstring_fixed round-trip
+10/16 Test: write_varstring_fixed / read_varstring_fixed round-trip
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_varstring_fixed / read_varstring_fixed round-trip"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_varstring_fixed / read_varstring_fixed round-trip" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_varstring_fixed / read_varstring_fixed round-trip"
+Randomness seeded to: 1313200365
+===============================================================================
+All tests passed (6 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_varstring_fixed / read_varstring_fixed round-trip" end time: Apr 05 17:54 UTC
+"write_varstring_fixed / read_varstring_fixed round-trip" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/16 Testing: write_blob / read_blob with known fixed length
+11/16 Test: write_blob / read_blob with known fixed length
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_blob / read_blob with known fixed length"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_blob / read_blob with known fixed length" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_blob / read_blob with known fixed length"
+Randomness seeded to: 3077038533
+===============================================================================
+All tests passed (3 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_blob / read_blob with known fixed length" end time: Apr 05 17:54 UTC
+"write_blob / read_blob with known fixed length" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/16 Testing: write_varblob / read_varblob (vector) round-trip
+12/16 Test: write_varblob / read_varblob (vector) round-trip
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_varblob / read_varblob (vector) round-trip"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_varblob / read_varblob (vector) round-trip" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_varblob / read_varblob (vector) round-trip"
+Randomness seeded to: 431200987
+===============================================================================
+All tests passed (7 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_varblob / read_varblob (vector) round-trip" end time: Apr 05 17:54 UTC
+"write_varblob / read_varblob (vector) round-trip" time elapsed: 00:00:00
+----------------------------------------------------------
+
+13/16 Testing: write_varblob (stream) / read_varblob round-trip
+13/16 Test: write_varblob (stream) / read_varblob round-trip
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "write_varblob (stream) / read_varblob round-trip"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"write_varblob (stream) / read_varblob round-trip" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "write_varblob (stream) / read_varblob round-trip"
+Randomness seeded to: 2182028353
+===============================================================================
+All tests passed (2 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"write_varblob (stream) / read_varblob round-trip" end time: Apr 05 17:54 UTC
+"write_varblob (stream) / read_varblob round-trip" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/16 Testing: tellp tracks the number of bytes read so far
+14/16 Test: tellp tracks the number of bytes read so far
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "tellp tracks the number of bytes read so far"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"tellp tracks the number of bytes read so far" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "tellp tracks the number of bytes read so far"
+Randomness seeded to: 4153510227
+===============================================================================
+All tests passed (6 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"tellp tracks the number of bytes read so far" end time: Apr 05 17:54 UTC
+"tellp tracks the number of bytes read so far" time elapsed: 00:00:00
+----------------------------------------------------------
+
+15/16 Testing: mixed types serialised and deserialised in sequence
+15/16 Test: mixed types serialised and deserialised in sequence
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "mixed types serialised and deserialised in sequence"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"mixed types serialised and deserialised in sequence" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "mixed types serialised and deserialised in sequence"
+Randomness seeded to: 3353867484
+===============================================================================
+All tests passed (6 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"mixed types serialised and deserialised in sequence" end time: Apr 05 17:54 UTC
+"mixed types serialised and deserialised in sequence" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/16 Testing: repeated values of the same type serialised in sequence
+16/16 Test: repeated values of the same type serialised in sequence
+Command: "/home/runner/work/serialstorm/serialstorm/build/tests/test_serialstorm" "repeated values of the same type serialised in sequence"
+Directory: /home/runner/work/serialstorm/serialstorm/build/tests
+"repeated values of the same type serialised in sequence" start time: Apr 05 17:54 UTC
+Output:
+----------------------------------------------------------
+Filters: "repeated values of the same type serialised in sequence"
+Randomness seeded to: 264259507
+===============================================================================
+All tests passed (10 assertions in 1 test case)
+
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"repeated values of the same type serialised in sequence" end time: Apr 05 17:54 UTC
+"repeated values of the same type serialised in sequence" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Apr 05 17:54 UTC
