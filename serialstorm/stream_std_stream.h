@@ -82,7 +82,7 @@ public:
   template <typename T>
   inline void write_blob(std::vector<T> const &blob, size_t const size) {
     /// Write a blob of specific size to the stream
-    stream.write(blob.data(), size);
+    stream.write(reinterpret_cast<char const*>(blob.data()), static_cast<std::streamsize>(size));
   }
 };
 

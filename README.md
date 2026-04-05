@@ -1,5 +1,8 @@
 # SerialStorm
 
+[![Tests](https://github.com/VoxelStorm-Ltd/serialstorm/actions/workflows/tests.yml/badge.svg)](https://github.com/VoxelStorm-Ltd/serialstorm/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/VoxelStorm-Ltd/serialstorm/branch/main/graph/badge.svg)](https://codecov.io/gh/VoxelStorm-Ltd/serialstorm)
+
 VoxelStorm's simple, high performance, header-only, stream serialisation library.
 
 SerialStorm provides a stream wrapper with a number of functions for encoding and decoding numerical, string, and binary data to and from streams.
@@ -7,6 +10,10 @@ SerialStorm provides a stream wrapper with a number of functions for encoding an
 It can work with `std::` streams (stringstreams, file streams), which is what you would use in the majority of applications within an existing network engine.  It can also read and write to Boost Asio directly, using either sync or async interfaces, which can be useful for simple programs without an existing network engine in place.
 
 SerialStorm also provides a CRTP interface for easily adding support for your own streams, or stream-like interfaces.
+
+## Dependencies
+
+SerialStorm depends on `cast_if_required`, a small template utility from [VoxelStorm-Ltd/cast_if_required](https://github.com/VoxelStorm-Ltd/cast_if_required), shared across multiple VoxelStorm projects.  When adding SerialStorm to your project, make sure `cast_if_required.h` is on your include path alongside the `serialstorm/` directory.  The test suite fetches it automatically via CMake FetchContent.
 
 ## Performance concepts
 
