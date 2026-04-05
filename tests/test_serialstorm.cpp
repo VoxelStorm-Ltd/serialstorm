@@ -480,7 +480,7 @@ TEST_CASE("write_varblob (stream) / read_varblob round-trip", "[blob]") {
 // Read-position tracking (tellp)
 // ============================================================================
 
-TEST_CASE("tellp tracks the number of bytes read so far", "[tellp]") {
+TEST_CASE("stream_base::tellp() reports the running tally of bytes consumed from the stream", "[tellp]") {
   // tellp() is incremented exclusively by stream_base::read_buffer, which is
   // invoked by read_pod and read_varint.  Derived-class string/blob helpers
   // that call stream_std_stream::read_buffer directly do not go through the
