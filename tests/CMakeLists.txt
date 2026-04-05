@@ -14,11 +14,20 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
+FetchContent_Declare(
+  cast_if_required
+  GIT_REPOSITORY https://github.com/VoxelStorm-Ltd/cast_if_required.git
+  GIT_TAG        master
+)
+FetchContent_MakeAvailable(cast_if_required)
+
 add_executable(test_serialstorm test_serialstorm.cpp)
 
-# Add the repository root to the include path so that both
-# serialstorm/ headers and the top-level cast_if_required.h are found.
-target_include_directories(test_serialstorm PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
+# Add the repository root (serialstorm/ headers) and cast_if_required to include paths.
+target_include_directories(test_serialstorm PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
+  ${cast_if_required_SOURCE_DIR}
+)
 
 target_link_libraries(test_serialstorm PRIVATE Catch2::Catch2WithMain)
 

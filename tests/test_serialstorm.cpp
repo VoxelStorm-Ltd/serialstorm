@@ -145,10 +145,10 @@ TEST_CASE("write_buffer / read_buffer with raw byte arrays", "[buffer]") {
   SECTION("binary data including null bytes and 0xFF") {
     std::stringstream ss;
     stream_t s(ss);
-    std::vector<char> input = {'\x00', '\x01', '\x7F', '\xFE', '\xFF'};
+    std::vector<unsigned char> input = {0x00, 0x01, 0x7F, 0xFE, 0xFF};
     s.write_buffer(input.data(), input.size());
     reset_for_read(ss);
-    std::vector<char> output(input.size());
+    std::vector<unsigned char> output(input.size());
     s.read_buffer(output.data(), output.size());
     CHECK(output == input);
   }
@@ -378,21 +378,21 @@ TEST_CASE("write_blob / read_blob with known fixed length", "[blob]") {
   SECTION("non-empty blob") {
     std::stringstream ss;
     stream_t s(ss);
-    std::vector<char> const input = {'a', 'b', 'c', '\x00', '\xFF'};
+    std::vector<unsigned char> const input = {'a', 'b', 'c', 0x00, 0xFF};
     s.write_blob(input);
     reset_for_read(ss);
-    auto const result = s.read_blob<char>(input.size());
+    auto const result = s.read_blob<unsigned char>(input.size());
     CHECK(result == input);
   }
   SECTION("single byte") {
     std::stringstream ss;
     stream_t s(ss);
-    std::vector<char> const input = {'\xAB'};
+    std::vector<unsigned char> const input = {0xAB};
     s.write_blob(input);
     reset_for_read(ss);
-    auto const result = s.read_blob<char>(1u);
+    auto const result = s.read_blob<unsigned char>(1u);
     REQUIRE(result.size() == 1u);
-    CHECK(static_cast<unsigned char>(result[0]) == 0xAB);
+    CHECK(result[0] == 0xAB);
   }
 }
 
