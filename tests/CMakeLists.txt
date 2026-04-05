@@ -1,3 +1,10 @@
+cmake_minimum_required(VERSION 3.14)
+project(serialstorm_tests LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -8,10 +15,12 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_executable(test_serialstorm test_serialstorm.cpp)
-target_link_libraries(test_serialstorm PRIVATE
-  serialstorm::serialstorm
-  Catch2::Catch2WithMain
-)
+
+# Add the repository root to the include path so that both
+# serialstorm/ headers and the top-level cast_if_required.h are found.
+target_include_directories(test_serialstorm PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
+
+target_link_libraries(test_serialstorm PRIVATE Catch2::Catch2WithMain)
 
 # Optional code coverage instrumentation (GCC / Clang only)
 option(SERIALSTORM_COVERAGE "Enable code coverage instrumentation" OFF)
@@ -25,6 +34,7 @@ if(SERIALSTORM_COVERAGE)
 endif()
 
 # Register individual Catch2 test cases with CTest
-list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
+enable_testing()
+list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 include(Catch)
 catch_discover_tests(test_serialstorm)

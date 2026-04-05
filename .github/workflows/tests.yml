@@ -16,9 +16,8 @@ jobs:
 
       - name: Configure CMake (Debug + coverage)
         run: |
-          cmake -B build \
+          cmake -B build -S tests \
             -DCMAKE_BUILD_TYPE=Debug \
-            -DSERIALSTORM_BUILD_TESTS=ON \
             -DSERIALSTORM_COVERAGE=ON
 
       - name: Build

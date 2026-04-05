@@ -11,6 +11,10 @@ It can work with `std::` streams (stringstreams, file streams), which is what yo
 
 SerialStorm also provides a CRTP interface for easily adding support for your own streams, or stream-like interfaces.
 
+## Dependencies
+
+SerialStorm depends on `cast_if_required`, a small template utility from [libvoxelstorm](https://github.com/VoxelStorm-Ltd/libvoxelstorm), shared across multiple VoxelStorm projects.  A copy of `cast_if_required.h` is included at the top level of this repository for convenience.  When adding SerialStorm to your project, make sure this file (or your own copy from `libvoxelstorm`) is on your include path alongside the `serialstorm/` directory.
+
 ## Performance concepts
 
 Designed for massively multiplayer game engines, performance is SerialStorm's first priority, taking precedence over ease of use when necessary.  You don't pay for anything you don't use, and SerialStorm doesn't add any forced safety features or training wheels which might impact performance even slightly.
