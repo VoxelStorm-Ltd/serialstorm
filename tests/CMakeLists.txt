@@ -17,7 +17,7 @@ FetchContent_MakeAvailable(Catch2)
 FetchContent_Declare(
   cast_if_required
   GIT_REPOSITORY https://github.com/VoxelStorm-Ltd/cast_if_required.git
-  GIT_TAG        master
+  GIT_TAG        0237e7df3a25b5c34edb864ac20eb7e98d3f24cc
 )
 FetchContent_MakeAvailable(cast_if_required)
 
