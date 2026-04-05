@@ -249,8 +249,8 @@ TEST_CASE("read_varint throws std::runtime_error on unknown size byte", "[varint
 TEST_CASE("write_string / read_string bare (caller supplies length)", "[string]") {
   // write_string / read_string are "unsafe" variants: no length prefix on the
   // wire, so the caller must know the length before calling read_string.
-  // Pass explicit std::string to avoid hiding of the base-class overload by
-  // the stream_std_stream template.
+  // Pass an explicit std::string so this test exercises the string-taking
+  // write_string overload directly.
   SECTION("typical string") {
     std::stringstream ss;
     stream_t s(ss);
