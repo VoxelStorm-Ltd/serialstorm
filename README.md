@@ -13,7 +13,7 @@ SerialStorm also provides a CRTP interface for easily adding support for your ow
 
 ## Dependencies
 
-- `cast_if_required`, a small template utility from [VoxelStorm-Ltd/cast_if_required](https://github.com/VoxelStorm-Ltd/cast_if_required).
+- [`cast_if_required`](https://github.com/VoxelStorm-Ltd/cast_if_required) - a small cross-platform cast helper utility.
 
 ## Performance concepts
 
