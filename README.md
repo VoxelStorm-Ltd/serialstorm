@@ -1,5 +1,8 @@
 # SerialStorm
 
+[![Tests](https://github.com/VoxelStorm-Ltd/serialstorm/actions/workflows/tests.yml/badge.svg)](https://github.com/VoxelStorm-Ltd/serialstorm/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/VoxelStorm-Ltd/serialstorm/branch/main/graph/badge.svg)](https://codecov.io/gh/VoxelStorm-Ltd/serialstorm)
+
 VoxelStorm's simple, high performance, header-only, stream serialisation library.
 
 SerialStorm provides a stream wrapper with a number of functions for encoding and decoding numerical, string, and binary data to and from streams.
