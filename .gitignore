@@ -1,0 +1,14 @@
+# CMake build directories
+build/
+build-*/
+
+# Coverage output
+coverage.info
+coverage-report/
+
+# Compiled object files and binaries
+*.o
+*.a
+*.so
+*.gcda
+*.gcno
