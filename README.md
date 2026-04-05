@@ -13,7 +13,7 @@ SerialStorm also provides a CRTP interface for easily adding support for your ow
 
 ## Dependencies
 
-SerialStorm depends on `cast_if_required`, a small template utility from [VoxelStorm-Ltd/cast_if_required](https://github.com/VoxelStorm-Ltd/cast_if_required), shared across multiple VoxelStorm projects.  When adding SerialStorm to your project, make sure `cast_if_required.h` is on your include path alongside the `serialstorm/` directory.  The test suite fetches it automatically via CMake FetchContent.
+- `cast_if_required`, a small template utility from [VoxelStorm-Ltd/cast_if_required](https://github.com/VoxelStorm-Ltd/cast_if_required).
 
 ## Performance concepts
 
