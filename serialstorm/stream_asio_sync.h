@@ -1,5 +1,4 @@
-#ifndef SERIALSTORM_STREAM_ASIO_SYNC_H_INCLUDED
-#define SERIALSTORM_STREAM_ASIO_SYNC_H_INCLUDED
+#pragma once
 
 #include <boost/asio/basic_stream_socket.hpp>
 #include <boost/asio/read.hpp>
@@ -57,18 +56,18 @@ public:
     write_buffer(boost::asio::buffer(data, size));
   }
 
-  template <typename T>
+  template<typename T>
   inline void write_string(std::basic_string<T> const &string) {
     /// Write a string to the stream synchronously
     write_buffer(boost::asio::buffer(string));
   }
 
-  template <typename T>
+  template<typename T>
   inline void write_blob(std::vector<T> const &blob) {
     /// Write a blob to the stream synchronously
     write_buffer(boost::asio::buffer(blob));
   }
-  template <typename T>
+  template<typename T>
   inline void write_blob(std::vector<T> const &blob, size_t const size) {
     /// Write a blob of specific size to the stream synchronously
     write_buffer(boost::asio::buffer(blob, size));
@@ -76,5 +75,3 @@ public:
 };
 
 }
-
-#endif // SERIALSTORM_STREAM_ASIO_SYNC_H_INCLUDED
