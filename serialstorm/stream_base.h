@@ -1,5 +1,4 @@
-#ifndef SERIALSTORM_STREAM_BASE_H_INCLUDED
-#define SERIALSTORM_STREAM_BASE_H_INCLUDED
+#pragma once
 
 #include <vector>
 #include <sstream>
@@ -32,7 +31,6 @@ namespace serialstorm {
 template<typename StreamParam, template<typename> typename StreamT>
 class stream_base {
   /// CRTP style static polymorphic base class for streams
-private:
   enum class varint_size : uint8_t {                                            // the first byte that defines the size of unsigned integer this varint contains
     UINT_8  = 0b10000000u,                                                      // 1 byte, also bitmask to detect if this is a full byte
     UINT_16 = 0b10000001u,                                                      // 2 bytes
@@ -40,7 +38,7 @@ private:
     UINT_64 = 0b10000011u                                                       // 8 bytes
   };
 
-  mutable size_t read_pos = 0;                                                  // tracked read position in the stream, for tellp() - independent of underlying stream
+  mutable size_t read_pos{0};                                                   // tracked read position in the stream, for tellp() - independent of underlying stream
 
 public:
   // -------------------------- Status functions -------------------------------
@@ -276,7 +274,7 @@ public:
     write_string(string);
   }
 
-  template <typename T>
+  template<typename T>
   inline void write_blob(std::vector<T> const &blob) {
     /// CTCP polymorphic buffer write function: write a bare blob to the stream
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
@@ -288,7 +286,7 @@ public:
       write_verification("<L");
     #endif // SERIALSTORM_DEBUG_VERIFY_BLOB
   }
-  template <typename T>
+  template<typename T>
   inline void write_blob(std::vector<T> const &blob, size_t const size) {
     /// CTCP polymorphic buffer write function: write a bare blob to the stream
     /// Note: this cannot be safely decoded on its own unless its length is known by the recipient
@@ -346,5 +344,3 @@ private:
 };
 
 }
-
-#endif // SERIALSTORM_STREAM_BASE_H_INCLUDED
