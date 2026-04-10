@@ -1,5 +1,4 @@
-#ifndef SERIALSTORM_FORWARD_H_INCLUDED
-#define SERIALSTORM_FORWARD_H_INCLUDED
+#pragma once
 
 namespace serialstorm {
 
@@ -16,5 +15,3 @@ template<typename SocketType>
 class stream_asio_async;
 
 }
-
-#endif // SERIALSTORM_FORWARD_H_INCLUDED
