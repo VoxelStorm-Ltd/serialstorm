@@ -1,5 +1,4 @@
-#ifndef SERIALSTORM_STREAM_STD_FSTREAM_H_INCLUDED
-#define SERIALSTORM_STREAM_STD_FSTREAM_H_INCLUDED
+#pragma once
 
 #include "stream_base.h"
 #include <fstream>
@@ -68,18 +67,18 @@ public:
     stream.write(reinterpret_cast<char const*>(data), static_cast<std::streamsize>(size));
   }
 
-  template <typename T>
+  template<typename T>
   inline void write_string(std::basic_string<T> const &string) {
     /// Write a string to the stream
     stream.write(string.c_str(), static_cast<std::streamsize>(string.size()));
   }
 
-  template <typename T>
+  template<typename T>
   inline void write_blob(std::vector<T> const &blob) {
     /// Write a blob to the stream
     write_blob(blob, blob.size() * sizeof(T));
   }
-  template <typename T>
+  template<typename T>
   inline void write_blob(std::vector<T> const &blob, size_t const size) {
     /// Write a blob of specific size to the stream
     stream.write(reinterpret_cast<char const*>(blob.data()), static_cast<std::streamsize>(size));
@@ -87,5 +86,3 @@ public:
 };
 
 }
-
-#endif // SERIALSTORM_STREAM_STD_FSTREAM_H_INCLUDED
