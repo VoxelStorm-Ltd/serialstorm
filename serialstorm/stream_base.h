@@ -16,15 +16,15 @@
   #endif // SERIALSTORM_DEBUG_VERIFY_DELIMITER
 #endif
 
-#if defined(__EMSCRIPTEN__) && !defined(NO_DISABLE_EXCEPTION_CATCHING)
-  // emscripten does not support exceptions by default
+#ifdef SERIALSTORM_NO_EXCEPTIONS
+  // projects without exception support must opt out explicitly, including Emscripten builds
   #include <iostream>
   #define REPORT_ERROR std::cerr << "ERROR: " << ss.str() << std::endl; return {};
   #define REPORT_ERROR_NORETURN std::cerr << "ERROR: " << ss.str() << std::endl; return;
 #else
   #define REPORT_ERROR throw std::runtime_error(ss.str());
   #define REPORT_ERROR_NORETURN throw std::runtime_error(ss.str());
-#endif
+#endif // SERIALSTORM_NO_EXCEPTIONS
 
 namespace serialstorm {
 
@@ -125,10 +125,12 @@ public:
     #ifdef SERIALSTORM_DEBUG_VERIFY_STRING
       check_verification(SERIALSTORM_DEBUG_VERIFY_DELIMITER + "S>", __func__);
     #endif // SERIALSTORM_DEBUG_VERIFY_STRING
-    return static_cast<StreamT<StreamParam> const*>(this)->read_string(stringlength);
+    auto const result{static_cast<StreamT<StreamParam> const*>(this)->read_string(stringlength)};
+    read_pos += result.size();
     #ifdef SERIALSTORM_DEBUG_VERIFY_STRING
       check_verification("<S", __func__);
     #endif // SERIALSTORM_DEBUG_VERIFY_STRING
+    return result;
   }
 
   template<typename T>
